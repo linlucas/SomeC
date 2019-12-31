@@ -2,7 +2,7 @@
 
 void readLine(char line[]);
 
-int main() {
+int nextLineMain() {
     char line[256];
     readLine(line);
     printf("%s", line);
