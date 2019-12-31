@@ -22,4 +22,5 @@ int linkedListMain() {
         printf("%d\n", firstPtr->value);
         firstPtr = firstPtr->nextNode;
     }
+    return 0;
 }
