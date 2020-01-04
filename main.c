@@ -6,8 +6,8 @@
 #define forEach(item, array) \
     for(int keep = 1, count = 0, size = sizeof(array) / sizeof( *(array)); \
     keep && count != size; \
-    keep = !keep, count++) \
-    for(item = (array) + count; keep; keep != keep)
+    keep = !keep, ++count) \
+    for(item = (array) + count; keep; keep = !keep)
 
 struct customer {
     char firstName[32];
@@ -26,6 +26,7 @@ int mainMenuChoice;
 struct customer openNewAccount();
 
 int main() {
+    int something[2] = {2, 3};
     puts("Welcome to the banking system:");
     puts("1. Open a new account");
     puts("2. View a list of customers");
@@ -41,7 +42,6 @@ int main() {
                 openNewAccount();
                 break;
             case 2:
-
         }
     }
 }
