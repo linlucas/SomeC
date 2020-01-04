@@ -3,18 +3,25 @@
 #include <stdbool.h>
 #include <string.h>
 
-char line[256];
-char *end;
-int mainMenuChoice;
+#define forEach(item, array) \
+    for(int keep = 1, count = 0, size = sizeof(array) / sizeof( *(array)); \
+    keep && count != size; \
+    keep = !keep, count++) \
+    for(item = (array) + count; keep; keep != keep)
 
 struct customer {
     char firstName[32];
     char lastName[32];
     char citizenship[32];
-    double balance;
     int age;
     int phoneNum;
+    double balance;
 };
+
+char line[256];
+char *end;
+struct customer customerList[1048];
+int mainMenuChoice;
 
 struct customer openNewAccount();
 
@@ -33,6 +40,7 @@ int main() {
             case 1:
                 openNewAccount();
                 break;
+            case 2:
 
         }
     }
@@ -40,9 +48,9 @@ int main() {
 
 struct customer openNewAccount() {
     char *token;
-    struct customer thisCustomer;
+    struct customer thisCustomer = {};
 
-    puts("Hello, what is your full name?");
+    puts("What is your full name?");
     if (fgets(line, sizeof(line), stdin)) {
         token = strtok(line, " ");
         strcpy(thisCustomer.firstName, token);
@@ -51,13 +59,25 @@ struct customer openNewAccount() {
         strtok(thisCustomer.lastName, "\n");
     }
 
-    puts("Which country does your citizenship reside in?");
+    printf("Hi %s, which country does your citizenship reside in?", thisCustomer.firstName);
     if (fgets(line, sizeof(line), stdin)) {
         strcpy(thisCustomer.citizenship, line);
     }
+    puts("What is your age?");
+    if (fgets(line, sizeof(line), stdin)) {
+        thisCustomer.age = (int) strtol(line, &end, 10);
+    }
+    puts("What is your phone number?");
+    if (fgets(line, sizeof(line), stdin)) {
+        thisCustomer.phoneNum = (int) strtol(line, &end, 10);
+    }
+    puts("How much money would you like to deposit today?");
+    if (fgets(line, sizeof(line), stdin)) {
+        thisCustomer.balance = strtod(line, &end);
+    }
+    return thisCustomer;
+}
 
-    printf("%s %s %s", thisCustomer.firstName, thisCustomer.lastName, thisCustomer.citizenship);
-
-
+void viewCustomerList() {
 
 }
