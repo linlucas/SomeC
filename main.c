@@ -24,9 +24,20 @@ struct customer customerList[1048];
 int mainMenuChoice;
 
 struct customer openNewAccount();
+void viewCustomerList();
 
 int main() {
-    int something[2] = {2, 3};
+    struct customer wow = {"Lucas", "Lin", "United States", 18,
+            2067195611, 123.50};
+    struct customer cool = {"Emma", "Lau", "United States", 18,
+            234433423, 134.20};
+    struct customer somthing = {"Alex", "Rigor", "United States", 19,
+            234242345, 100};
+    customerList[0] = wow;
+    customerList[1] = cool;
+    customerList[2] = somthing;
+
+
     puts("Welcome to the banking system:");
     puts("1. Open a new account");
     puts("2. View a list of customers");
@@ -42,6 +53,7 @@ int main() {
                 openNewAccount();
                 break;
             case 2:
+                viewCustomerList();
         }
     }
 }
@@ -59,7 +71,7 @@ struct customer openNewAccount() {
         strtok(thisCustomer.lastName, "\n");
     }
 
-    printf("Hi %s, which country does your citizenship reside in?", thisCustomer.firstName);
+    printf("Hi %s, which country does your citizenship reside in?\n", thisCustomer.firstName);
     if (fgets(line, sizeof(line), stdin)) {
         strcpy(thisCustomer.citizenship, line);
     }
@@ -79,5 +91,10 @@ struct customer openNewAccount() {
 }
 
 void viewCustomerList() {
+    int i = 1;
 
+    forEach(struct customer *pCustomer, customerList) {
+        printf("Customer #%d\nName: %s\nAge: %d\nPhone Number: %d", i, pCustomer->firstName, pCustomer->age,
+                pCustomer->phoneNum);
+    }
 }
