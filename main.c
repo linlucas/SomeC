@@ -9,6 +9,7 @@
     keep = !keep, ++count) \
     for (item = (array) + count; keep; keep = !keep)
 #define getInput(line) if (fgets(line, sizeof(line), stdin))
+#define removeNewline(line) strtok(line, "\n")
 
 struct user {
     char firstName[32];
@@ -179,6 +180,7 @@ void editAccountInfo() {
             case 2:
                 puts("What country does the changed citizenship reside in?");
                 getInput(line) {
+                    strtok(line, "\n");
                     strcpy(userList[userIndex].citizenship, line);
                 }
                 break;
