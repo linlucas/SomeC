@@ -104,6 +104,7 @@ struct user openNewAccount() {
 
     printf("Hi %s, which country does your citizenship reside in?\n", thisCustomer.firstName);
     getInput(line) {
+        strtok(line, "\n");
         strcpy(thisCustomer.citizenship, line);
     }
     puts("What is your age?");
@@ -124,6 +125,9 @@ struct user openNewAccount() {
 void viewCustomerList() {
     int i = 1;
 
+    if (userList[0].age == 0) {
+        puts("No user in the database.");
+    }
     forEach(struct user *pCustomer, userList) {
         if (pCustomer->age == 0) {
             break;
@@ -163,10 +167,12 @@ void editAccountInfo() {
             case 1:
                 puts("Input your first name:");
                 getInput(line) {
+                    strtok(line, "\n");
                     strcpy(userList[userIndex].firstName, line);
                 }
                 puts("Input your last name:");
                 getInput(line) {
+                    strtok(line, "\n");
                     strcpy(userList[userIndex].lastName, line);
                 }
                 break;
@@ -239,7 +245,7 @@ void viewFullAccountInfo() {
     userIndex = getUserIndex();
     thisUser = userList[userIndex];
 
-    printf("Name: %s %s\nCitizenship: %s\nAge: %d\nPhone number: %d\nBalance: %f\n",
+    printf("Name: %s %s\nCitizenship: %s\nAge: %d\nPhone number: %d\nBalance: %.2f\n",
             thisUser.firstName, thisUser.lastName, thisUser.citizenship, thisUser.age,
             thisUser.phoneNum, thisUser.balance);
 }
