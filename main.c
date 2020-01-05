@@ -7,10 +7,10 @@
     for (int keep = 1, count = 0, size = sizeof(array) / sizeof( *(array)); \
     keep && count != size; \
     keep = !keep, ++count) \
-    for(item = (array) + count; keep; keep = !keep)
+    for (item = (array) + count; keep; keep = !keep)
 #define getInput(line) if (fgets(line, sizeof(line), stdin))
 
-struct customer {
+struct user {
     char firstName[32];
     char lastName[32];
     char citizenship[32];
@@ -21,13 +21,16 @@ struct customer {
 
 char line[256];
 char *end;
-struct customer customerList[256];
+struct user userList[256];
 int mainMenuChoice;
 
-struct customer openNewAccount();
+struct user openNewAccount();
 void viewCustomerList();
 void editAccountInfo();
 void makeTransaction();
+void eraseAccount();
+void viewFullAccountInfo();
+int getUserIndex();
 
 int main() {
     int emptyIndex = 0;
@@ -47,12 +50,12 @@ int main() {
             switch (mainMenuChoice) {
                 case 1:
                     for (int i = 0; i <= 256; ++i) {
-                        if (customerList[i].age == 0) {
+                        if (userList[i].age == 0) {
                             emptyIndex = i;
                             break;
                         }
                     }
-                    customerList[emptyIndex] = openNewAccount();
+                    userList[emptyIndex] = openNewAccount();
                     break;
                 case 2:
                     viewCustomerList();
@@ -64,9 +67,14 @@ int main() {
                     makeTransaction();
                     break;
                 case 5:
-
+                    eraseAccount();
+                    break;
+                case 6:
+                    viewFullAccountInfo();
+                    break;
                 default:
                     puts("Invalid choice, please input a number from 1-6.");
+                    break;
             }
         }
 
@@ -81,9 +89,9 @@ int main() {
     } while (goAgain);
 }
 
-struct customer openNewAccount() {
+struct user openNewAccount() {
     char *token;
-    struct customer thisCustomer = {};
+    struct user thisCustomer = {};
 
     puts("What is your full name?");
     getInput(line) {
@@ -116,7 +124,7 @@ struct customer openNewAccount() {
 void viewCustomerList() {
     int i = 1;
 
-    forEach(struct customer *pCustomer, customerList) {
+    forEach(struct user *pCustomer, userList) {
         if (pCustomer->age == 0) {
             break;
         }
@@ -134,7 +142,7 @@ void editAccountInfo() {
         thisPhoneNum = (int) strtol(line, &end, 10);
     }
     for (i = 0; i < 256; ++i) {
-        if (customerList[i].phoneNum == thisPhoneNum) {
+        if (userList[i].phoneNum == thisPhoneNum) {
             userIndex = i;
             break;
         }
@@ -143,7 +151,7 @@ void editAccountInfo() {
         puts("Sorry, this user doesn't exist in our database.");
         return;
     } else {
-        printf("Hi %s, what would you like to change?\n", customerList[userIndex].firstName);
+        printf("Hi %s, what would you like to change?\n", userList[userIndex].firstName);
         puts("1. Name");
         puts("2. Citizenship");
         puts("3. Age");
@@ -155,32 +163,30 @@ void editAccountInfo() {
             case 1:
                 puts("Input your first name:");
                 getInput(line) {
-                    strcpy(customerList[userIndex].firstName, line);
+                    strcpy(userList[userIndex].firstName, line);
                 }
                 puts("Input your last name:");
                 getInput(line) {
-                    strcpy(customerList[userIndex].lastName, line);
+                    strcpy(userList[userIndex].lastName, line);
                 }
                 break;
             case 2:
                 puts("What country does the changed citizenship reside in?");
                 getInput(line) {
-                    strcpy(customerList[userIndex].citizenship, line);
+                    strcpy(userList[userIndex].citizenship, line);
                 }
                 break;
             case 3:
                 puts("What is the changed age?");
                 getInput(line) {
-                    // TODO, casting from long to int changes num?
-                    customerList[userIndex].age = (int) strtol(line, &end, 10);
+                    userList[userIndex].age = (int) strtol(line, &end, 10);
                 }
                 break;
             case 4:
                 puts("What is the new phone number?");
                 getInput(line) {
                     thisPhoneNum = (int) strtol(line, &end, 10);
-                    printf("%d", thisPhoneNum);
-                    customerList[userIndex].phoneNum = thisPhoneNum;
+                    userList[userIndex].phoneNum = thisPhoneNum;
                 }
                 break;
             default:
@@ -190,34 +196,22 @@ void editAccountInfo() {
 }
 
 void makeTransaction() {
-    int thisPhoneNum = 0, userIndex = 0, i;
+    int userIndex = 0;
 
     puts("What is your phone number?");
-    getInput(line) {
-        thisPhoneNum = (int) strtol(line, &end, 10);
-    }
-
-    for (i = 0; i < 256; ++i) {
-        if (customerList[i].phoneNum == thisPhoneNum) {
-            userIndex = i;
-        }
-    }
-    if (i == 256) {
-        puts("Sorry, this number doesn't exist in our database.");
-        return;
-    }
-    printf("Hi %s, please enter 1 for deposit, 2 for withdrawal\n", customerList[userIndex].firstName);
+    userIndex = getUserIndex();
+    printf("Hi %s, please enter 1 for deposit, 2 for withdrawal\n", userList[userIndex].firstName);
     getInput(line) {
         if (strtol(line, &end, 10) == 1) {
             puts("How much would you like to deposit?");
             getInput(line) {
-                customerList[userIndex].balance += strtod(line, &end);
+                userList[userIndex].balance += strtod(line, &end);
             }
             puts("Account updated.");
         } else {
             puts("How much would you like to withdraw?");
             getInput(line) {
-                customerList[userIndex].balance -= strtod(line, &end);
+                userList[userIndex].balance -= strtod(line, &end);
             }
             puts("Account updated.");
         }
@@ -225,11 +219,42 @@ void makeTransaction() {
 }
 
 void eraseAccount() {
-    long thisPhoneNum = 0;
+    int userIndex;
 
-    puts("Enter the phone number for the account to erase:");
+    puts("Please enter the phone number for the account you want to delete:");
+    userIndex = getUserIndex();
+    printf("%s, are you sure you want to erase everything? (yes/no)\n", userList[userIndex].firstName);
     getInput(line) {
-        thisPhoneNum = strtol(line, &end, 10);
+        if (strcmp(strtok(line, "\n"), "yes") == 0) {
+            userList[userIndex].age = 0;
+        }
     }
+}
 
+void viewFullAccountInfo() {
+    int userIndex;
+    struct user thisUser;
+
+    puts("Please enter your phone number:");
+    userIndex = getUserIndex();
+    thisUser = userList[userIndex];
+
+    printf("Name: %s %s\nCitizenship: %s\nAge: %d\nPhone number: %d\nBalance: %f\n",
+            thisUser.firstName, thisUser.lastName, thisUser.citizenship, thisUser.age,
+            thisUser.phoneNum, thisUser.balance);
+}
+
+int getUserIndex() {
+    int thisPhoneNum = 0, i;
+
+    getInput(line) {
+        thisPhoneNum = (int) strtol(line, &end, 10);
+    }
+    for (i = 0; i < 256; ++i) {
+        if (userList[i].phoneNum == thisPhoneNum) {
+            return i;
+        }
+    }
+    puts("This user does not exist!");
+    return -1;
 }
