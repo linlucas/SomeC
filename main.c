@@ -168,19 +168,19 @@ void editAccountInfo() {
             case 1:
                 puts("Input your first name:");
                 getInput(line) {
-                    strtok(line, "\n");
+                    removeNewline(line);
                     strcpy(userList[userIndex].firstName, line);
                 }
                 puts("Input your last name:");
                 getInput(line) {
-                    strtok(line, "\n");
+                    removeNewline(line);
                     strcpy(userList[userIndex].lastName, line);
                 }
                 break;
             case 2:
                 puts("What country does the changed citizenship reside in?");
                 getInput(line) {
-                    strtok(line, "\n");
+                    removeNewline(line);
                     strcpy(userList[userIndex].citizenship, line);
                 }
                 break;
