@@ -6,7 +6,6 @@ int nextLineMain() {
     char line[256];
     readLine(line);
     printf("%s", line);
-    return 0;
 }
 
 void readLine(char line[]) {
