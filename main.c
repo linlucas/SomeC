@@ -1,9 +1,7 @@
 #include <stdio.h>
-#include <assert.h>
+#include <stdlib.h>
+#include "projectHeaders.h"
 
-#define NELEMS(a) (int) (sizeof(a)/sizeof(a[0]))
-
-int main() {
-    char something[] = "asfsadf";
-    printf("%d", NELEMS(something));
+int main(void) {
+    
 }
