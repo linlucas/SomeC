@@ -33,7 +33,7 @@ void eraseAccount();
 void viewFullAccountInfo();
 int getUserIndex();
 
-int bankingMain() {
+int main() {
     int emptyIndex = 0;
     bool goAgain = false;
 
@@ -134,7 +134,8 @@ void viewCustomerList() {
             if (pCustomer->age == 0) {
                 break;
             }
-            printf("Customer #%d\nName: %s\nAge: %d\nPhone Number: %d\n\n", i, pCustomer->firstName, pCustomer->age,
+            printf("Customer #%d\nName: %s\nAge: %d\nPhone Number: %d\n\n",
+                    i, pCustomer->firstName, pCustomer->age,
                    pCustomer->phoneNum);
             ++i;
         }
