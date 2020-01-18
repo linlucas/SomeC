@@ -72,6 +72,7 @@ int GPAmain(void) {
     gpa = total / classCount;
     printf("You semester GPA is %.2f", gpa);
     if (gpa > 3.0) printf(", good job %s!\n", name);
+    free(pClassList);
     exit(EXIT_SUCCESS);
 }
 

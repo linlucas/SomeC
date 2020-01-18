@@ -33,7 +33,7 @@ void eraseAccount();
 void viewFullAccountInfo();
 int getUserIndex();
 
-int main() {
+int bankingMain() {
     int emptyIndex = 0;
     bool goAgain = false;
 
