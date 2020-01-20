@@ -3,13 +3,14 @@
 
 #define INITIAL_SIZE 10
 
+// assume that caller calls free, always add NUL to the end
 char *dynamic_next_line(void) {
     char *input = malloc(INITIAL_SIZE + 1);
-    char *currentPos = input;
+    if (!(input)) exit(EXIT_FAILURE);
+    char *traverser = input;
     int ch;
     size_t len = 0, addedLen = 0;
 
-    if (!(input)) exit(EXIT_FAILURE);
 
     for (;;) {
         ch = fgetc(stdin);
@@ -20,8 +21,8 @@ char *dynamic_next_line(void) {
             if (!(input)) exit(EXIT_FAILURE);
             addedLen += 10;
         }
-        *currentPos++ = (char) ch;
+        *traverser++ = (char) ch;
     }
-    *currentPos = '\0';
+    *traverser = '\0';
     return input;
 }
