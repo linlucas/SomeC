@@ -4,7 +4,7 @@
 #define INITIAL_SIZE 10
 
 // assume that caller calls free, always add NUL to the end
-char *dynamic_next_line(void) {
+char *dynamic_next_le(void) {
     char *input = malloc(INITIAL_SIZE + 1);
     if (!(input)) exit(EXIT_FAILURE);
     char *traverser = input;
