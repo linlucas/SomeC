@@ -1,0 +1,96 @@
+// correct first
+#include <stdio.h>
+#include <string.h>
+
+float get_average_sleep_hours(char *file_name, int year, int month) {
+  FILE *pFile;
+  char line[256];
+  int this_month;
+  int this_day;
+  int this_year;
+  int days_count = 0;
+  float this_hour;
+  float total_hours = 0;
+
+  if (!(pFile = fopen(file_name, "r"))) {
+    return -4;
+  }
+  fgets(line, sizeof(line), pFile); // Gets rid of the first line
+  line[strcspn(line, "\n")] = '\0';
+  printf("%s\n", line);
+
+  while (fscanf(pFile, "%2d/%2d/%4d|%f|%*d|%*d", &this_month, &this_day, &this_year, &this_hour) == 4) {
+    if (this_month > 12 || this_month < 1 || this_day < 1 || this_day > 31) {
+      return -5;
+    }
+    if ((month == this_month) && (year == this_year)) {
+      total_hours += this_hour;
+      ++days_count;
+    }
+  }
+
+  fclose(pFile);
+  return total_hours / days_count;
+}
+
+// correct second
+int get_sleep_log(char *in_file, char *out_file) {
+  FILE *pFile;
+  FILE *pOut;
+  char name[40];
+  int this_month;
+  int this_day;
+  int this_year;
+  int max_month = 0;
+  int max_year = 0;
+  float this_hour;
+
+  if (!(pFile = fopen(in_file, "r"))) {
+    return -4;
+  }
+  fgets(name, sizeof(name), pFile);
+
+  while (fscanf(pFile, "%2d/%2d/%4d|%f|%*d|%*d", &this_month, &this_day, &this_year, &this_hour) == 4) {
+    if (this_month > 12 || this_month < 1 || this_day < 1 || this_day > 31) {
+      return -3;
+    }
+    if (this_year > max_year) {
+      max_year = this_year;
+    }
+  }
+  rewind(pFile);
+  fgets(name, sizeof(name), pFile);
+
+  while (fscanf(pFile, "%2d/%2d/%4d|%f|%*d|%*d", &this_month, &this_day, &this_year, &this_hour) == 4) {
+    if (this_year == max_year && this_month > max_month) {
+      max_month = this_month;
+    }
+  }
+  rewind(pFile);
+  fgets(name, sizeof(name), pFile);
+  name[strcspn(name, "\n")] = '\0';
+
+  if (!(pOut = fopen(out_file, "w"))) {
+    return -3;
+  }
+  fprintf(pOut, "Name: %s, Month: %d, Year: %d\n", name, max_month, max_year);
+  fputs("HOUR: 0 1 2 3 4 5 6 7 8 9 10\n", pOut);
+
+  while (fscanf(pFile, "%2d/%2d/%4d|%f|%*d|%*d", &this_month, &this_day, &this_year, &this_hour) == 4) {
+    if (this_month == max_month && this_year == max_year) {
+      fprintf(pOut, "%-6d|", this_day);
+      for (int i = 0; i < this_hour; ++i) {
+        if (this_hour - 1 == i) {
+          fprintf(pOut, "-");
+        } else {
+          fprintf(pOut, "--");
+        }
+        if (i == 9) {
+          break;
+        }
+      }
+      fprintf(pOut, this_hour < 10 ? "|\n" : "\n");
+    }
+  }
+
+  fprintf(pOut, "Average Sleep Hours: %.2f hours\n", 7.3434);
